@@ -15,13 +15,11 @@ function setup() {
   noFill();
 }
 
-function touchStarted() {
-  console.log("touch started");
-}
-
-function touchEnded() {
+function mouseReleased(e) {
+  if (e.cancellable) {
+    e.preventDefault();
+  }
   if (mouseX > 0 && mouseX < width && mouseY > 0 && mouseY < height) {
-    console.log("touch ended");
     controlPoints.push(createVector(mouseX, mouseY));
   }
 }
