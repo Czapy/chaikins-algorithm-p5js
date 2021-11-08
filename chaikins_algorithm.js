@@ -15,7 +15,7 @@ function setup() {
   noFill();
 }
 
-function mouseReleased() {
+function touchEnded() {
   if (mouseX > 0 && mouseX < width && mouseY > 0 && mouseY < height) {
     controlPoints.push(createVector(mouseX, mouseY));
   }
