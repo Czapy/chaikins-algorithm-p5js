@@ -6,7 +6,7 @@ let iterationsDisplay;
 let closedShapeCheckbox;
 
 function setup() {
-  createCanvas(windowWidth - 10, windowHeight - 100);
+  createCanvas(windowWidth - 20, windowHeight - 180);
   createSpan("Number of iterations");
   iterationsSlider = createSlider(0, 7, 0, 1);
   iterationsDisplay = createSpan();
