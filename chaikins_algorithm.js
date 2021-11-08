@@ -1,16 +1,28 @@
-const controlPoints = [];
+let controlPoints = [];
 
 let iterationsSlider;
 let iterationsDisplay;
-
 let closedShapeCheckbox;
+let clearControlPointsButton;
 
 function setup() {
   createCanvas(windowWidth - 20, windowHeight - 160);
   createSpan("Number of iterations");
   iterationsSlider = createSlider(0, 7, 0, 1);
   iterationsDisplay = createSpan();
+  let div = createDiv();
   closedShapeCheckbox = createCheckbox("Closed shape", false);
+  closedShapeCheckbox.parent(div);
+  clearControlPointsButton = createButton("Clear");
+  clearControlPointsButton.size(60, 30);
+  clearControlPointsButton.mousePressed((e) => {
+    controlPoints = [];
+    draw();
+  });
+  clearControlPointsButton.addClass('control-btn')
+  clearControlPointsButton.parent(closedShapeCheckbox);
+
+  frameRate(5);
 
   noFill();
 }
@@ -21,6 +33,7 @@ function mouseReleased(e) {
       e.preventDefault();
     }
     controlPoints.push(createVector(mouseX, mouseY));
+    draw();
   }
 }
 
@@ -67,7 +80,7 @@ function draw() {
       controlPoints[i].y
     );
   }
-  if (closedShapeCheckbox.checked()) {
+  if (closedShapeCheckbox.checked() && controlPoints.length > 1) {
     line(
       controlPoints[controlPoints.length - 1].x,
       controlPoints[controlPoints.length - 1].y,
