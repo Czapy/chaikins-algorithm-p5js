@@ -6,7 +6,7 @@ let iterationsDisplay;
 let closedShapeCheckbox;
 
 function setup() {
-  createCanvas(windowWidth - 20, windowHeight - 180);
+  createCanvas(windowWidth - 20, windowHeight - 160);
   createSpan("Number of iterations");
   iterationsSlider = createSlider(0, 7, 0, 1);
   iterationsDisplay = createSpan();
@@ -16,10 +16,10 @@ function setup() {
 }
 
 function mouseReleased(e) {
-  if (e.cancelable) {
-    e.preventDefault();
-  }
   if (mouseX > 0 && mouseX < width && mouseY > 0 && mouseY < height) {
+     if (e.cancelable) {
+      e.preventDefault();
+    }
     controlPoints.push(createVector(mouseX, mouseY));
   }
 }
