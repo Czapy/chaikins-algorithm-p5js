@@ -6,12 +6,22 @@ let closedShapeCheckbox;
 let clearControlPointsButton;
 
 function setup() {
-  createCanvas(windowWidth - 20, windowHeight - 160);
+  createElement("h1", "Chaikin's algorithm for high speed curve generation");
+  createP(`Chaikin specified a simple scheme by which curves could be generated from a given control polygon.
+  The idea is unique in that the underlying mathematical description is ignored in favor of a geometric algorithm
+  that just selects new control points along the line segments of the original control polygon.
+  `);
+  createP(`Chaikin’s method avoids the analytical definition of
+  B-splines and provides a simple, elegant curve drawing mechanism that has been shown to be equivalent to a 
+  quadratic B-spline curve.`);
+  createCanvas(windowWidth - 50, windowHeight - 170);
   createSpan("Number of iterations");
-  iterationsSlider = createSlider(0, 7, 0, 1);
+  iterationsSlider = createSlider(0, 5, 1, 1);
+  iterationsSlider.changed(draw);
   iterationsDisplay = createSpan();
   let div = createDiv();
   closedShapeCheckbox = createCheckbox("Closed shape", false);
+  closedShapeCheckbox.changed(draw);
   closedShapeCheckbox.parent(div);
   clearControlPointsButton = createButton("Clear");
   clearControlPointsButton.size(60, 30);
@@ -19,17 +29,21 @@ function setup() {
     controlPoints = [];
     draw();
   });
-  clearControlPointsButton.addClass('control-btn')
+  clearControlPointsButton.addClass("control-btn");
   clearControlPointsButton.parent(closedShapeCheckbox);
 
-  frameRate(5);
+  frameRate(10);
 
   noFill();
 }
 
+function windowResized() {
+  resizeCanvas(windowWidth - 50, windowHeight - 170);
+}
+
 function mouseReleased(e) {
   if (mouseX > 0 && mouseX < width && mouseY > 0 && mouseY < height) {
-     if (e.cancelable) {
+    if (e.cancelable) {
       e.preventDefault();
     }
     controlPoints.push(createVector(mouseX, mouseY));
@@ -68,57 +82,63 @@ function draw() {
   });
   endShape();
 
-  // Draw control lines
-  stroke(0, 0, 0, 50);
-  strokeWeight(2);
-  strokeDashed();
-  for (let i = 1; i < controlPoints.length; i++) {
-    line(
-      controlPoints[i - 1].x,
-      controlPoints[i - 1].y,
-      controlPoints[i].x,
-      controlPoints[i].y
-    );
-  }
-  if (closedShapeCheckbox.checked() && controlPoints.length > 1) {
-    line(
-      controlPoints[controlPoints.length - 1].x,
-      controlPoints[controlPoints.length - 1].y,
-      controlPoints[0].x,
-      controlPoints[0].y
-    );
-  }
+  if (controlPoints.length > 1) {
+    // Draw control lines
+    stroke(0, 0, 0, 50);
+    strokeWeight(2);
+    strokeDashed();
+    for (let i = 1; i < controlPoints.length; i++) {
+      line(
+        controlPoints[i - 1].x,
+        controlPoints[i - 1].y,
+        controlPoints[i].x,
+        controlPoints[i].y
+      );
+    }
+    if (closedShapeCheckbox.checked()) {
+      line(
+        controlPoints[controlPoints.length - 1].x,
+        controlPoints[controlPoints.length - 1].y,
+        controlPoints[0].x,
+        controlPoints[0].y
+      );
+    }
 
-  // Calculate Chaikin's points for number of iterations based on slider
-  let pointsToIterate;
-  if (closedShapeCheckbox.checked() && controlPoints.length > 1) {
-    pointsToIterate = [...controlPoints, controlPoints[0], controlPoints[1]];
-  } else {
-    pointsToIterate = [...controlPoints];
-  }
-  const iterations = iterationsSlider.value();
-  const chaikinsPoints = chaikinsAlgorithm(pointsToIterate, iterations);
+    // Calculate Chaikin's points for number of iterations based on slider
+    let pointsToIterate;
+    if (closedShapeCheckbox.checked() && controlPoints.length > 1) {
+      pointsToIterate = [...controlPoints, controlPoints[0], controlPoints[1]];
+    } else {
+      pointsToIterate = [
+        controlPoints[0],
+        ...controlPoints,
+        controlPoints[controlPoints.length - 1],
+      ];
+    }
+    const iterations = iterationsSlider.value();
+    const chaikinsPoints = chaikinsAlgorithm(pointsToIterate, iterations);
 
-  // Draw Chaikin's points
-  //stroke(255, 0, 0, 100);
-  //strokeWeight(6);
-  //beginShape(POINTS);
-  //chaikinsPoints.forEach((p) => {
-  //  vertex(p.x, p.y);
-  //});
-  //endShape();
+    // Draw Chaikin's points
+    //stroke(255, 0, 0, 100);
+    //strokeWeight(6);
+    //beginShape(POINTS);
+    //chaikinsPoints.forEach((p) => {
+    //  vertex(p.x, p.y);
+    //});
+    //endShape();
 
-  // Draw Chaikin's lines
-  stroke(50, 50, 200);
-  strokeWeight(2);
-  noStrokeDashed();
-  for (let i = 1; i < chaikinsPoints.length; i++) {
-    line(
-      chaikinsPoints[i - 1].x,
-      chaikinsPoints[i - 1].y,
-      chaikinsPoints[i].x,
-      chaikinsPoints[i].y
-    );
+    // Draw Chaikin's lines
+    stroke(50, 50, 200);
+    strokeWeight(2);
+    noStrokeDashed();
+    for (let i = 1; i < chaikinsPoints.length; i++) {
+      line(
+        chaikinsPoints[i - 1].x,
+        chaikinsPoints[i - 1].y,
+        chaikinsPoints[i].x,
+        chaikinsPoints[i].y
+      );
+    }
   }
 }
 
