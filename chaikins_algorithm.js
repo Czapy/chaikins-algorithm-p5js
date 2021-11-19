@@ -5,6 +5,8 @@ let iterationsDisplay;
 let closedShapeCheckbox;
 let clearControlPointsButton;
 
+let colorPalette;
+
 function setup() {
   createElement("h1", "Chaikin's algorithm for high speed curve generation");
   createP(`Chaikin specified a simple scheme by which curves could be generated from a given control polygon.
@@ -35,6 +37,15 @@ function setup() {
   frameRate(10);
 
   noFill();
+
+  colorPalette = [
+    color("#020419"),
+    color("#4c1c4a"),
+    color("#911c5b"),
+    color("#ed513e"),
+    color("#f5956c"),
+    color("#faeadc"),
+  ];
 }
 
 function windowResized() {
@@ -118,20 +129,22 @@ function draw() {
     const iterations = iterationsSlider.value();
     const chaikinsPoints = chaikinsAlgorithm(pointsToIterate, iterations);
 
-    // Draw Chaikin's points
-    //stroke(255, 0, 0, 100);
-    //strokeWeight(6);
-    //beginShape(POINTS);
-    //chaikinsPoints.forEach((p) => {
-    //  vertex(p.x, p.y);
-    //});
-    //endShape();
-
     // Draw Chaikin's lines
-    stroke(50, 50, 200);
-    strokeWeight(2);
+    // stroke(50, 50, 200);
+    strokeWeight(4);
     noStrokeDashed();
+    colorMode(RGB);
     for (let i = 1; i < chaikinsPoints.length; i++) {
+      let progress =
+        ((i - 1) / chaikinsPoints.length) * (colorPalette.length - 1);
+      stroke(
+        lerpColor(
+          colorPalette[Math.floor(progress)],
+          colorPalette[Math.floor(progress) + 1],
+          progress % 1
+        )
+      );
+
       line(
         chaikinsPoints[i - 1].x,
         chaikinsPoints[i - 1].y,
@@ -139,6 +152,15 @@ function draw() {
         chaikinsPoints[i].y
       );
     }
+
+    // Draw Chaikin's points
+    stroke(255, 0, 0, 100);
+    strokeWeight(6);
+    beginShape(POINTS);
+    chaikinsPoints.forEach((p) => {
+      vertex(p.x, p.y);
+    });
+    endShape();
   }
 }
 
