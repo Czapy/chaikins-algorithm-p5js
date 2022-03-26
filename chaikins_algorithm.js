@@ -154,13 +154,13 @@ function draw() {
     }
 
     // Draw Chaikin's points
-    stroke(255, 0, 0, 100);
-    strokeWeight(6);
-    beginShape(POINTS);
-    chaikinsPoints.forEach((p) => {
-      vertex(p.x, p.y);
-    });
-    endShape();
+    // stroke(255, 0, 0, 100);
+    // strokeWeight(6);
+    // beginShape(POINTS);
+    // chaikinsPoints.forEach((p) => {
+    //   vertex(p.x, p.y);
+    // });
+    // endShape();
   }
 }
 
